@@ -2,9 +2,20 @@
 
 ## Establish the source
 
-1. Identify the provider and distinguish IDs. A T3 thread ID is not a native
-   Codex or Claude session ID. Resolve authorized metadata or ask; never guess
-   or write an app database.
+1. Resolve the supplied ID before choosing a provider or command:
+
+   ```sh
+   python3 "$SKILL_ROOT/scripts/resolve_session.py" "$SESSION_ID" --pretty
+   ```
+
+   The helper accepts T3 thread IDs and native Claude Code or Codex session
+   IDs. It reads local event/session records without changing them. Use its
+   `provider`, `native_session_id`, `cwd`, `model`, `boundary`, and
+   `launch_argv`; never infer provider from the receiver/current agent. If it
+   reports `session_not_found`, `ambiguous_session_id`, an unreadable record,
+   an unavailable native session, or a non-completed head, stop and report the
+   exact condition instead of probing providers blindly. `--kind` may be used
+   only when the user supplies or confirms the ID kind.
 2. Name an explicit completed-turn boundary. For reviewed adaptive-history
    input, coverage is exactly `complete` or `partial`; never use an
    active/ambiguous turn.

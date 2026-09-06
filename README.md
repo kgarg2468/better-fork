@@ -60,6 +60,14 @@ Better Fork has three routes:
 | **Direct** | Explicit fresh-context opt-in | Injects every reviewed public record, exactly and in order; no selector or initial context-file read |
 | **Legacy selector** | Explicit selector opt-in | Uses a model-selected compact packet plus a complete recoverable public archive |
 
+Before choosing a route, the skill deterministically resolves the supplied ID. You can provide any of:
+
+- a T3 thread ID;
+- a native Claude Code session ID; or
+- a native Codex session ID.
+
+The read-only resolver maps T3 IDs to their actual provider-native session and returns the source cwd, model, completed boundary, and provider-specific launch arguments. It never assumes the source provider from whichever agent happens to be running the skill.
+
 Direct mode is admitted only when reviewed public-history coverage is complete and its entire serialized packet fits a 24,000-character transfer budget. The limit is not a model context-window claim. Partial or oversized history returns `native_required`; unsafe or invalid input fails closed. History is never silently truncated.
 
 Only reviewed `user`, `assistant`, and public `tool` records are transferable. System/developer text, hidden reasoning, private provider internals, secrets, and raw native exports are excluded.
@@ -133,7 +141,9 @@ skills/fork/
 │   └── workflow.md
 └── scripts/
     ├── direct_context.py
-    └── fork_context.py
+    ├── fork_context.py
+    ├── resolve_session.py
+    └── test_resolve_session.py
 ```
 
 The helper scripts use only the Python standard library. Better Fork does not modify T3's fork UI or replace a client's built-in `/fork` command.

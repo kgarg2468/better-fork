@@ -5,7 +5,7 @@ description: Continue work from an explicit completed session boundary while pre
 
 # Fork
 
-Create a real continuation from a known completed boundary. Preserve the parent session, repository state, user authority, and requested model.
+Create a real continuation from a known completed boundary. Accept a T3 thread ID, native Claude Code session ID, or native Codex session ID. Preserve the parent session, repository state, user authority, and requested model.
 
 This skill is normally discoverable automatically. In Codex, find skills with `/skills` and invoke this one as `$fork`; do not promise that `/fork` intercepts a client built-in. In Claude environments that discover skills, `/fork` may invoke it, but never override a native command of that name.
 
@@ -17,13 +17,23 @@ This skill is normally discoverable automatically. In Codex, find skills with `/
 - Read [references/workflow.md](references/workflow.md) before creating or handing off any fork.
 - Read [references/evaluation.md](references/evaluation.md) only to design or interpret a context-transfer comparison.
 
+## Resolve the source ID first
+
+For every supplied ID, run the bundled read-only resolver before choosing a provider or fork command:
+
+```sh
+python3 "$SKILL_ROOT/scripts/resolve_session.py" "$SESSION_ID" --pretty
+```
+
+`SKILL_ROOT` is the resolved directory containing this `SKILL.md`. The resolver accepts T3, Claude Code, and Codex IDs, returns the actual provider/native ID plus cwd, model, boundary, and launch arguments, and never mutates or launches anything. Treat `provider`, `native_session_id`, and `boundary` from its JSON as authoritative. Never infer the source provider from the current agent. If resolution fails, stop with its error; do not try another provider blindly.
+
 ## Invariants
 
 - Check native capabilities first and prefer native host fork tools.
 - Never claim a child exists without an actual child/session ID. Without a callable API, give an exact local CLI command or a handoff marked `not created`.
 - A shared-workspace subagent is not necessarily a persistent, user-addressable interactive fork. Do not equate them.
 - Do not fake T3 registration, write app databases, make UI changes, or silently continue the task in the parent.
-- Resolve T3 thread IDs separately from native session IDs and name the exact completed boundary.
+- Resolve every supplied ID with `scripts/resolve_session.py`; never infer its provider from the current agent.
 - Preserve explicitly requested models; never silently substitute or assume a selector is cheaper.
 - Preserve the parent checkout and requested/current working-copy semantics. If shared versus isolated workspace materially matters and is unknown, clarify it. Never discard dirty or untracked work silently.
 - A fork request authorizes the requested continuation, not unrelated exports, model calls, repository changes, or evaluation runs.
