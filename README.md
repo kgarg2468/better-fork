@@ -52,6 +52,14 @@ You can also clone the repository and copy `skills/fork` into your agent's skill
 
 ## How it works
 
+`$fork ID` in a new chat now loads the previous conversation into that current
+chat and keeps its selected model. IDs may come from T3, Claude, or Codex.
+This is conversational context attachment; it does not merge backend session
+identities. The history reader includes public user/assistant text and reports
+that tool results and attachments are excluded. Separate native forks remain
+available when explicitly requested. The benchmark below measures the earlier
+context-transfer routes, not this attachment workflow.
+
 Better Fork has three routes:
 
 | Route | When it runs | Context behavior |

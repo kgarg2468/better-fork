@@ -1,6 +1,6 @@
 ---
 name: fork
-description: Continue work from an explicit completed session boundary while preserving the parent, using native host forks by default or an explicitly requested adaptive-context experiment.
+description: Attach a previous T3, Claude, or Codex conversation to the current chat and continue its work; create a separate native fork only when requested.
 ---
 
 # Fork
@@ -11,7 +11,8 @@ This skill is normally discoverable automatically. In Codex, find skills with `/
 
 ## Choose the mode
 
-- Use a native host fork for ordinary continuation. It has no selector step or selection cost and is the default.
+- For `$fork ID`, “attach this session”, or ordinary continuation in a new chat, load the source conversation into the CURRENT chat. Keep the current model. Read the current-chat attachment section of the workflow and perform it; a native fork API is not required.
+- Create a separate native session only when the user explicitly requests another session or a native fork.
 - Use fresh context only when explicitly requested, or when the user clearly changes direction and opts into the experiment. It is not a native fork.
 - For an explicitly selected model-free direct method, read [references/direct.md](references/direct.md). For the explicitly selected legacy selector method, use the legacy selector section of [references/workflow.md](references/workflow.md).
 - Read [references/workflow.md](references/workflow.md) before creating or handing off any fork.
@@ -29,7 +30,7 @@ python3 "$SKILL_ROOT/scripts/resolve_session.py" "$SESSION_ID" --pretty
 
 ## Invariants
 
-- Check native capabilities first and prefer native host fork tools.
+- For current-chat attachment, read history and continue here. Do not stop with “fork not created” or give CLI commands merely because a native fork API is absent.
 - Never claim a child exists without an actual child/session ID. Without a callable API, give an exact local CLI command or a handoff marked `not created`.
 - A shared-workspace subagent is not necessarily a persistent, user-addressable interactive fork. Do not equate them.
 - Do not fake T3 registration, write app databases, make UI changes, or silently continue the task in the parent.
@@ -38,4 +39,4 @@ python3 "$SKILL_ROOT/scripts/resolve_session.py" "$SESSION_ID" --pretty
 - Preserve the parent checkout and requested/current working-copy semantics. If shared versus isolated workspace materially matters and is unknown, clarify it. Never discard dirty or untracked work silently.
 - A fork request authorizes the requested continuation, not unrelated exports, model calls, repository changes, or evaluation runs.
 
-Report mode, provider/native ID, completed boundary, repository checkpoint and dirty-state handling, workspace semantics, requested model, child ID or `not created`, history coverage, and fallback.
+For attachment, briefly report what work was recovered, the source ID, and any missing context. Say history was loaded into this chat; never claim a backend session merge. The detailed child-ID report applies only to separate native forks.
