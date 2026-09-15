@@ -31,7 +31,7 @@ You already explained the project once. Better Fork gives the next chat that his
 
 ## Why “Better” Fork?
 
-Built-in forks are designed to continue the same session with its native context. That is great when the next task is more of the same—but forking should not be one-size-fits-all.
+Built-in forks are designed to continue the same session with its native context. That is great when the next task is more of the same, but forking should not be one-size-fits-all.
 
 Better Fork lets the next task determine the context it receives: load the public conversation into your current chat, preserve a separate native fork, transfer the complete reviewed history, or let an agent build a focused context packet when the direction changes. You keep control of the model, workspace, and continuation mode.
 
@@ -117,7 +117,7 @@ See the [workflow](skills/fork/references/workflow.md) and [direct-context contr
 
 ## Benchmark
 
-The fixed development comparison tested three routes—native, the older selector workflow, and Better Fork's direct workflow—on Codex and Claude Code. It did **not** measure the current default attachment workflow.
+The fixed development comparison tested three routes: native, the older selector workflow, and Better Fork's direct workflow. It ran on Codex and Claude Code, but did **not** measure the current default attachment workflow.
 
 | Provider | Native mean | Selector mean | Better Fork direct | Direct vs native | Direct input vs native | Direct cost vs native |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |

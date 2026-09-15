@@ -94,7 +94,7 @@ ordinary default.
 
 ## Legacy selector continuation (experimental explicit opt-in)
 
-Build a fresh receiver context from reviewed public history—not a native fork
+Build a fresh receiver context from reviewed public history, not a native fork
 plus full history. Exclude hidden reasoning, system text, private provider/tool
 internals, secrets, and raw native exports. Reviewed public tool results may be
 included. Preserve roles: user text remains user authority; summaries are
@@ -158,7 +158,7 @@ overlap or contain unknown/duplicate IDs.
 `prepare` writes `context.json`, full archive `reviewed-history.json`, separate
 `next-task.txt`, `manifest.json`, and `manifest.sha256`. The archive contains all
 reviewed records. Its complement classification is the IDs outside both
-`retain_ids` and `summary_ids`, computed by the helper—not selector input.
+`retain_ids` and `summary_ids`, computed by the helper rather than selector input.
 Source, selection, and budget evidence is distributed across `context.json` and
 `manifest.json`; inspect both instead of requiring every field in the manifest.
 `manifest.sha256` is the raw hexadecimal digest of `manifest.json`; compute and
