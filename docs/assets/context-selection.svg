@@ -1,33 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="880" height="410" viewBox="0 0 880 410" role="img" aria-labelledby="title desc">
-  <title id="title">Context shaped around the next task</title>
-  <desc id="desc">Experimental opt-in selector: reviewed public history and the next task inform an agent selection. All user records and selected supporting records stay verbatim. Other supporting records may be summarized. The receiver gets the selected context and can retrieve any reviewed record from the complete archive.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="490" viewBox="0 0 880 490" role="img" aria-labelledby="title desc">
+  <title id="title">Pack for the next task</title>
+  <desc id="desc">The optional experimental selector uses reviewed history and the next task to choose context. Every user record and selected supporting records stay verbatim; other supporting details may be summarized. All reviewed records remain in an archive for later retrieval. The helper validates the selection.</desc>
   <style>
-    .bg{fill:#0d1117;stroke:#30363d}.box{fill:#161b22;stroke:#30363d;stroke-width:1.5}.title{font:bold 19px Arial,Helvetica,sans-serif;fill:#e6edf3}.text{font:15px Arial,Helvetica,sans-serif;fill:#e6edf3}.small{font:13px Arial,Helvetica,sans-serif;fill:#a6b0bd}.orange{fill:#e08a4b}.green{fill:#56d364}.arrow{fill:none;stroke:#e08a4b;stroke-width:2;marker-end:url(#arrow)}
+    text{font-family:Arial,Helvetica,sans-serif;fill:#243c46}.title{font-size:28px;font-weight:700}.name{font-size:17px;font-weight:700}.body{font-size:14px}.small{font-size:12px;fill:#56717a}.tag{font-size:11px;letter-spacing:1px;fill:#6367a4}.route{fill:none;stroke:#9ab4bb;stroke-width:2}.dash{stroke-dasharray:5 5}
   </style>
-  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10" fill="#e08a4b"/></marker></defs>
-  <rect class="bg" x="1" y="1" width="878" height="408" rx="12"/>
-  <text class="title" x="24" y="35">What does the next task need?</text>
-  <text class="small orange" x="856" y="33" text-anchor="end">SELECTOR · EXPERIMENTAL OPT-IN</text>
-  <rect class="box" x="24" y="64" width="224" height="70" rx="8"/>
-  <text class="text" x="40" y="93">Reviewed public history</text><text class="small" x="40" y="116">The conversation so far</text>
-  <rect class="box" x="24" y="157" width="224" height="70" rx="8"/>
-  <text class="text" x="40" y="186">Your next task</text><text class="small" x="40" y="209">The direction you want to take</text>
-  <path class="arrow" d="M248 99H270V145H294"/><path class="arrow" d="M248 192H270V145H294"/>
-  <rect class="box" x="297" y="109" width="192" height="73" rx="8"/>
-  <text class="text orange" x="393" y="138" text-anchor="middle">Agent selects context</text>
-  <text class="small" x="393" y="163" text-anchor="middle">Helper validates the plan</text>
-  <path class="arrow" d="M489 145H536"/>
-  <rect class="box" x="539" y="64" width="317" height="163" rx="8"/>
-  <text class="text green" x="555" y="94">Fresh receiver context</text>
-  <text class="small" x="555" y="125">All user records — verbatim</text>
-  <text class="small" x="555" y="153">Selected supporting records — verbatim</text>
-  <text class="small" x="555" y="181">Other supporting details — summarized</text>
-  <text class="small" x="555" y="209">Next task supplied separately</text>
-  <rect class="box" x="297" y="279" width="559" height="75" rx="8"/>
-  <path class="arrow" d="M136 227V316H294"/>
-  <text class="text" x="315" y="309">Complete reviewed archive</text>
-  <text class="small" x="315" y="335">Every reviewed record stays recoverable by ID.</text>
-  <path class="arrow" d="M749 279V230"/>
-  <text class="small" x="734" y="260" text-anchor="end">Retrieve when needed</text>
-  <text class="small" x="24" y="386">Selection is optional. Ordinary $fork loads public conversation history into your current chat.</text>
+  <rect width="880" height="490" rx="20" fill="#f3f7f5"/>
+  <text class="title" x="36" y="51">Pack for the next task.</text>
+  <text class="tag" x="844" y="46" text-anchor="end">SELECTOR / EXPERIMENTAL OPT-IN</text>
+  <text class="body" x="36" y="80">Useful context up front. The reviewed history stays within reach.</text>
+  <rect x="45" y="132" width="181" height="162" rx="8" fill="#e0e8e8" transform="rotate(-5 135 213)"/>
+  <rect x="43" y="130" width="181" height="162" rx="8" fill="#fff" stroke="#c5d6d9"/>
+  <text class="name" x="59" y="157" style="font-size:15px">Reviewed history</text>
+  <rect x="59" y="176" width="147" height="16" rx="4" fill="#d9efea"/>
+  <rect x="59" y="202" width="112" height="16" rx="4" fill="#e6e5f4"/>
+  <rect x="59" y="228" width="132" height="16" rx="4" fill="#d9efea"/>
+  <rect x="59" y="254" width="93" height="16" rx="4" fill="#e0e8e8"/>
+  <path class="route" d="M224 211H304M466 211H529"/>
+  <path d="m521 205 8 6-8 6" fill="none" stroke="#9ab4bb" stroke-width="2"/>
+  <rect x="299" y="119" width="174" height="37" rx="18" fill="#e6e5f4"/>
+  <text class="body" x="386" y="143" text-anchor="middle">Your next task</text>
+  <path class="route" d="M386 156V176"/>
+  <path d="M306 178H465V247H306Z" fill="#243c46"/>
+  <text x="386" y="205" text-anchor="middle" style="font-size:17px;font-weight:700;fill:#fff">Agent selects</text>
+  <text x="386" y="229" text-anchor="middle" style="font-size:12px;fill:#d3e1e4">Helper validates</text>
+  <rect x="533" y="119" width="311" height="202" rx="12" fill="#fff" stroke="#b5d5d0"/>
+  <path d="M548 119H829" stroke="#087e82" stroke-width="4"/>
+  <text class="name" x="551" y="150">Context for the receiver</text>
+  <circle cx="557" cy="182" r="4" fill="#087e82"/><text class="body" x="571" y="187">Every user record, verbatim</text>
+  <circle cx="557" cy="216" r="4" fill="#087e82"/><text class="body" x="571" y="221">Selected records, verbatim</text>
+  <circle cx="557" cy="250" r="4" fill="#7074b8"/><text class="body" x="571" y="255">Supporting details, summarized</text>
+  <text class="small" x="551" y="297">The next task is supplied separately.</text>
+  <path class="route" d="M133 296V394H299"/>
+  <rect x="299" y="363" width="545" height="65" rx="10" fill="#e5edee"/>
+  <text class="name" x="317" y="389">Complete reviewed archive</text>
+  <text class="small" x="317" y="411">All reviewed records, including those left out of the packet.</text>
+  <path class="route dash" d="M792 363V324"/>
+  <path d="m787 332 5-8 5 8" fill="none" stroke="#9ab4bb" stroke-width="2"/>
+  <text class="small" x="779" y="346" text-anchor="end">Retrieve by ID when needed</text>
+  <text class="small" x="36" y="465">Optional workflow. Default attachment reads the public conversation into your current chat.</text>
 </svg>

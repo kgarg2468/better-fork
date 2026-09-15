@@ -1,27 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="880" height="370" viewBox="0 0 880 370" role="img" aria-labelledby="title desc">
-  <title id="title">Choose how to continue</title>
-  <desc id="desc">Attach is the default and loads public history into the current chat. Native creates a separate provider fork when explicitly requested. Direct and selector are experimental opt-ins for fresh context: direct transfers every reviewed record; selector retains, summarizes, and archives context.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="460" viewBox="0 0 880 460" role="img" aria-labelledby="title desc">
+  <title id="title">One history, four ways forward</title>
+  <desc id="desc">A route map. Attach loads public history into the current chat by default. Request native for a separate provider fork. Opt into direct to transfer every reviewed record within the budget, or selector to shape fresh context around the next task.</desc>
   <style>
-    .panel{fill:#161b22;stroke:#30363d;stroke-width:1.5}.heading{font:bold 20px Arial,Helvetica,sans-serif;fill:#e6edf3}.text{font:15px Arial,Helvetica,sans-serif;fill:#e6edf3}.label{font:12px Arial,Helvetica,sans-serif;fill:#a6b0bd}.accent{fill:#e08a4b}.green{fill:#56d364}
+    text{font-family:Arial,Helvetica,sans-serif;fill:#243c46}.title{font-size:28px;font-weight:700}.name{font-size:18px;font-weight:700}.body{font-size:14px;fill:#56717a}.tag{font-size:11px;letter-spacing:1px}.line{fill:none;stroke-width:3;stroke-linecap:round}
   </style>
-  <rect class="panel" x="1" y="1" width="426" height="173" rx="12"/>
-  <rect class="panel" x="453" y="1" width="426" height="173" rx="12"/>
-  <rect class="panel" x="1" y="196" width="426" height="173" rx="12"/>
-  <rect class="panel" x="453" y="196" width="426" height="173" rx="12"/>
-  <text class="heading" x="23" y="35">Attach</text><text class="label green" x="405" y="33" text-anchor="end">DEFAULT</text>
-  <text class="text" x="23" y="72">“Pick up this session in my current chat.”</text>
-  <text class="text green" x="23" y="108">Public history → current chat</text>
-  <text class="label" x="23" y="145">Keep your selected model and workspace.</text>
-  <text class="heading" x="475" y="35">Native fork</text><text class="label" x="857" y="33" text-anchor="end">ON REQUEST</text>
-  <text class="text" x="475" y="72">“Create a separate provider session.”</text>
-  <text class="text" x="475" y="108">Native history → provider fork</text>
-  <text class="label" x="475" y="145">Uses the provider's own continuation mechanism.</text>
-  <text class="heading" x="23" y="230">Direct context</text><text class="label accent" x="405" y="228" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
-  <text class="text" x="23" y="267">“Carry every reviewed record forward.”</text>
-  <text class="text accent" x="23" y="303">Complete reviewed history → fresh context</text>
-  <text class="label" x="23" y="340">Must fit the transfer budget. No selector call.</text>
-  <text class="heading" x="475" y="230">Selector</text><text class="label accent" x="857" y="228" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
-  <text class="text" x="475" y="267">“Shape the context around my next task.”</text>
-  <text class="text accent" x="475" y="303">Agent selection → fresh context + archive</text>
-  <text class="label" x="475" y="340">Keep, summarize, or retrieve later.</text>
+  <rect width="880" height="460" rx="20" fill="#f3f7f5"/>
+  <text class="title" x="36" y="51">One history. Four ways forward.</text>
+  <text class="body" x="36" y="79">Choose the continuation that fits your next step.</text>
+  <path class="line" stroke="#087e82" d="M96 253H195V144H298"/>
+  <path class="line" stroke="#79939d" d="M195 253V233H298"/>
+  <path class="line" stroke="#7074b8" d="M195 253V322H298M195 322V411H298"/>
+  <circle cx="96" cy="253" r="23" fill="#243c46"/>
+  <path d="M86 249h20m-20 8h14" stroke="#fff" stroke-width="2"/>
+  <text class="body" x="96" y="298" text-anchor="middle">Your history</text>
+  <rect x="285" y="112" width="559" height="68" rx="12" fill="#d9efea"/>
+  <g stroke-width="3" fill="#f3f7f5"><circle cx="298" cy="144" r="7" stroke="#087e82"/><circle cx="298" cy="233" r="7" stroke="#79939d"/><circle cx="298" cy="322" r="7" stroke="#7074b8"/><circle cx="298" cy="411" r="7" stroke="#7074b8"/></g>
+  <text class="name" x="322" y="140">Attach</text><text class="tag" x="818" y="137" text-anchor="end">DEFAULT</text>
+  <text class="body" x="322" y="164">Load public history into the chat you are already in.</text>
+  <text class="name" x="322" y="229">Native fork</text><text class="tag" x="818" y="226" text-anchor="end">ON REQUEST</text>
+  <text class="body" x="322" y="253">Continue in a separate session using the provider's fork.</text>
+  <path d="M322 279H818M322 368H818" stroke="#d7e1e2"/>
+  <text class="name" x="322" y="318">Direct context</text><text class="tag" x="818" y="315" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
+  <text class="body" x="322" y="342">Transfer every reviewed record. Complete history must fit.</text>
+  <text class="name" x="322" y="407">Selector</text><text class="tag" x="818" y="404" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
+  <text class="body" x="322" y="431">Let an agent shape fresh context around your next task.</text>
 </svg>

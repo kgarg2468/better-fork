@@ -1,28 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="880" height="310" viewBox="0 0 880 310" role="img" aria-labelledby="title desc">
-  <title id="title">Bring the conversation with you</title>
-  <desc id="desc">Illustrative conversation handoff. An old session holds the task, constraints, and progress. Invoke $fork with its ID in the current chat to load its public history and continue with the current model and workspace.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="380" viewBox="0 0 880 380" role="img" aria-labelledby="title desc">
+  <title id="title">Carry the work forward</title>
+  <desc id="desc">A conversation timeline holds the task, constraints, and progress. Better Fork loads its public history into your current chat while the source stays intact. The receiver keeps its model and workspace.</desc>
   <style>
-    .panel{fill:#161b22;stroke:#30363d;stroke-width:1.5}.line{stroke:#30363d}.label{font:13px Arial,Helvetica,sans-serif;fill:#a6b0bd}.text{font:15px Arial,Helvetica,sans-serif;fill:#e6edf3}.mono{font:14px 'Liberation Mono',Consolas,monospace;fill:#e6edf3}.accent{fill:#e08a4b}.green{fill:#56d364}
+    text{font-family:Arial,Helvetica,sans-serif;fill:#243c46}.title{font-size:30px;font-weight:700}.label{font-size:12px;letter-spacing:1.5px;fill:#56717a}.body{font-size:16px}.small{font-size:13px;fill:#56717a}.teal{fill:#087e82}.mono{font:14px 'DejaVu Sans Mono',monospace;fill:#087e82}
   </style>
-  <rect class="panel" x="1" y="1" width="409" height="308" rx="12"/>
-  <rect class="panel" x="470" y="1" width="409" height="308" rx="12"/>
-  <path class="line" d="M1 40H410M470 40H879"/>
-  <circle cx="21" cy="21" r="5" fill="#ff5f57"/><circle cx="39" cy="21" r="5" fill="#febc2e"/><circle cx="57" cy="21" r="5" fill="#28c840"/>
-  <circle cx="490" cy="21" r="5" fill="#ff5f57"/><circle cx="508" cy="21" r="5" fill="#febc2e"/><circle cx="526" cy="21" r="5" fill="#28c840"/>
-  <text class="label" x="224" y="26" text-anchor="middle">previous conversation</text>
-  <text class="label" x="696" y="26" text-anchor="middle">your current chat</text>
-  <text class="label accent" x="23" y="77">THE WORK SO FAR</text>
-  <text class="text" x="23" y="113">“Add CSV export to the dashboard.”</text>
-  <text class="text" x="23" y="151">“Keep the existing date format.”</text>
-  <text class="text" x="23" y="189">“Export works. Unicode test is next.”</text>
-  <path class="line" d="M23 218H387M492 218H856"/>
-  <text class="label" x="23" y="247">T3, Claude Code, or Codex session ID</text>
-  <text class="label" x="23" y="276">Source conversation stays intact.</text>
-  <path d="M423 154H456m-8-7 8 7-8 7" fill="none" stroke="#e08a4b" stroke-width="2"/>
-  <text class="mono accent" x="492" y="79">$fork YOUR_SESSION_ID</text>
-  <text class="text green" x="492" y="119">Load the public conversation.</text>
-  <text class="text" x="492" y="151">Recover decisions and progress.</text>
-  <text class="text" x="492" y="183">Check the project. Continue here.</text>
-  <text class="label" x="492" y="247">Your selected model. Your workspace.</text>
-  <text class="label" x="492" y="276">Public text only; no tools or attachments.</text>
+  <rect width="880" height="380" rx="20" fill="#f3f7f5"/>
+  <text class="label" x="36" y="36">BETTER FORK / CONTINUITY</text>
+  <text class="title" x="36" y="78">Carry the work forward.</text>
+  <text class="small" x="36" y="107">One session ID connects the conversation so far to what you do next.</text>
+  <path d="M58 185H818" fill="none" stroke="#b5c8cd" stroke-width="4" stroke-linecap="round"/>
+  <path d="M408 185C465 185 459 286 528 286H811" fill="none" stroke="#087e82" stroke-width="5" stroke-linecap="round"/>
+  <path d="m802 278 10 8-10 8" fill="none" stroke="#087e82" stroke-width="3"/>
+  <g fill="#f3f7f5" stroke="#6c8992" stroke-width="3"><circle cx="68" cy="185" r="8"/><circle cx="223" cy="185" r="8"/><circle cx="378" cy="185" r="8"/></g>
+  <text class="body" x="50" y="157">Task</text><text class="body" x="181" y="157">Constraints</text><text class="body" x="346" y="157">Progress</text>
+  <text class="small" x="36" y="222">T3 · Claude Code · Codex</text>
+  <text class="small" x="604" y="173">Source stays intact</text>
+  <rect x="516" y="221" width="306" height="45" rx="22" fill="#d9efea"/>
+  <text class="mono" x="669" y="249" text-anchor="middle">$fork YOUR_SESSION_ID</text>
+  <circle cx="554" cy="286" r="9" fill="#087e82" stroke="#f3f7f5" stroke-width="3"/>
+  <text class="body teal" x="533" y="321">Your current chat, ready to continue</text>
+  <text class="small" x="533" y="346">Same selected model. Same workspace.</text>
+  <text class="small" x="36" y="346">Public conversation text only.</text>
 </svg>
