@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="370" viewBox="0 0 880 370" role="img" aria-labelledby="title desc">
+  <title id="title">Choose how to continue</title>
+  <desc id="desc">Attach is the default and loads public history into the current chat. Native creates a separate provider fork when explicitly requested. Direct and selector are experimental opt-ins for fresh context: direct transfers every reviewed record; selector retains, summarizes, and archives context.</desc>
+  <style>
+    .panel{fill:#161b22;stroke:#30363d;stroke-width:1.5}.heading{font:bold 20px Arial,Helvetica,sans-serif;fill:#e6edf3}.text{font:15px Arial,Helvetica,sans-serif;fill:#e6edf3}.label{font:12px Arial,Helvetica,sans-serif;fill:#a6b0bd}.accent{fill:#e08a4b}.green{fill:#56d364}
+  </style>
+  <rect class="panel" x="1" y="1" width="426" height="173" rx="12"/>
+  <rect class="panel" x="453" y="1" width="426" height="173" rx="12"/>
+  <rect class="panel" x="1" y="196" width="426" height="173" rx="12"/>
+  <rect class="panel" x="453" y="196" width="426" height="173" rx="12"/>
+  <text class="heading" x="23" y="35">Attach</text><text class="label green" x="405" y="33" text-anchor="end">DEFAULT</text>
+  <text class="text" x="23" y="72">“Pick up this session in my current chat.”</text>
+  <text class="text green" x="23" y="108">Public history → current chat</text>
+  <text class="label" x="23" y="145">Keep your selected model and workspace.</text>
+  <text class="heading" x="475" y="35">Native fork</text><text class="label" x="857" y="33" text-anchor="end">ON REQUEST</text>
+  <text class="text" x="475" y="72">“Create a separate provider session.”</text>
+  <text class="text" x="475" y="108">Native history → provider fork</text>
+  <text class="label" x="475" y="145">Uses the provider's own continuation mechanism.</text>
+  <text class="heading" x="23" y="230">Direct context</text><text class="label accent" x="405" y="228" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
+  <text class="text" x="23" y="267">“Carry every reviewed record forward.”</text>
+  <text class="text accent" x="23" y="303">Complete reviewed history → fresh context</text>
+  <text class="label" x="23" y="340">Must fit the transfer budget. No selector call.</text>
+  <text class="heading" x="475" y="230">Selector</text><text class="label accent" x="857" y="228" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
+  <text class="text" x="475" y="267">“Shape the context around my next task.”</text>
+  <text class="text accent" x="475" y="303">Agent selection → fresh context + archive</text>
+  <text class="label" x="475" y="340">Keep, summarize, or retrieve later.</text>
+</svg>
