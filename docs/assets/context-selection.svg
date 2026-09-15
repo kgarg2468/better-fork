@@ -2,40 +2,40 @@
   <title id="title">Pack for the next task</title>
   <desc id="desc">The optional experimental selector uses reviewed history and the next task to choose context. Every user record and selected supporting records stay verbatim; other supporting details may be summarized. All reviewed records remain in an archive for later retrieval. The helper validates the selection.</desc>
   <style>
-    text{font-family:Arial,Helvetica,sans-serif;fill:#243c46}.title{font-size:28px;font-weight:700}.name{font-size:17px;font-weight:700}.body{font-size:14px}.small{font-size:12px;fill:#56717a}.tag{font-size:11px;letter-spacing:1px;fill:#6367a4}.route{fill:none;stroke:#9ab4bb;stroke-width:2}.dash{stroke-dasharray:5 5}
+    text{font-family:Arial,Helvetica,sans-serif;fill:#e6edf3}.title{font-size:28px;font-weight:700}.name{font-size:17px;font-weight:700}.body{font-size:14px}.small{font-size:12px;fill:#a2b5bf}.tag{font-size:11px;letter-spacing:1px;fill:#b3aaf2}.route{fill:none;stroke:#718995;stroke-width:2}.dash{stroke-dasharray:5 5}
   </style>
-  <rect width="880" height="490" rx="20" fill="#f3f7f5"/>
+  <rect width="880" height="490" rx="20" fill="#101b24"/>
   <text class="title" x="36" y="51">Pack for the next task.</text>
   <text class="tag" x="844" y="46" text-anchor="end">SELECTOR / EXPERIMENTAL OPT-IN</text>
   <text class="body" x="36" y="80">Useful context up front. The reviewed history stays within reach.</text>
-  <rect x="45" y="132" width="181" height="162" rx="8" fill="#e0e8e8" transform="rotate(-5 135 213)"/>
-  <rect x="43" y="130" width="181" height="162" rx="8" fill="#fff" stroke="#c5d6d9"/>
+  <rect x="45" y="132" width="181" height="162" rx="8" fill="#2a3c49" transform="rotate(-5 135 213)"/>
+  <rect x="43" y="130" width="181" height="162" rx="8" fill="#192a36" stroke="#3b5363"/>
   <text class="name" x="59" y="157" style="font-size:15px">Reviewed history</text>
-  <rect x="59" y="176" width="147" height="16" rx="4" fill="#d9efea"/>
-  <rect x="59" y="202" width="112" height="16" rx="4" fill="#e6e5f4"/>
-  <rect x="59" y="228" width="132" height="16" rx="4" fill="#d9efea"/>
-  <rect x="59" y="254" width="93" height="16" rx="4" fill="#e0e8e8"/>
+  <rect x="59" y="176" width="147" height="16" rx="4" fill="#173e42"/>
+  <rect x="59" y="202" width="112" height="16" rx="4" fill="#34304f"/>
+  <rect x="59" y="228" width="132" height="16" rx="4" fill="#173e42"/>
+  <rect x="59" y="254" width="93" height="16" rx="4" fill="#2a3c49"/>
   <path class="route" d="M224 211H304M466 211H529"/>
-  <path d="m521 205 8 6-8 6" fill="none" stroke="#9ab4bb" stroke-width="2"/>
-  <rect x="299" y="119" width="174" height="37" rx="18" fill="#e6e5f4"/>
+  <path d="m521 205 8 6-8 6" fill="none" stroke="#718995" stroke-width="2"/>
+  <rect x="299" y="119" width="174" height="37" rx="18" fill="#34304f"/>
   <text class="body" x="386" y="143" text-anchor="middle">Your next task</text>
   <path class="route" d="M386 156V176"/>
-  <path d="M306 178H465V247H306Z" fill="#243c46"/>
-  <text x="386" y="205" text-anchor="middle" style="font-size:17px;font-weight:700;fill:#fff">Agent selects</text>
-  <text x="386" y="229" text-anchor="middle" style="font-size:12px;fill:#d3e1e4">Helper validates</text>
-  <rect x="533" y="119" width="311" height="202" rx="12" fill="#fff" stroke="#b5d5d0"/>
-  <path d="M548 119H829" stroke="#087e82" stroke-width="4"/>
+  <path d="M306 178H465V247H306Z" fill="#304d5e"/>
+  <text x="386" y="205" text-anchor="middle" style="font-size:17px;font-weight:700;fill:#e6edf3">Agent selects</text>
+  <text x="386" y="229" text-anchor="middle" style="font-size:12px;fill:#c3d4df">Helper validates</text>
+  <rect x="533" y="119" width="311" height="202" rx="12" fill="#192a36" stroke="#365c62"/>
+  <path d="M548 119H829" stroke="#54d4c7" stroke-width="4"/>
   <text class="name" x="551" y="150">Context for the receiver</text>
-  <circle cx="557" cy="182" r="4" fill="#087e82"/><text class="body" x="571" y="187">Every user record, verbatim</text>
-  <circle cx="557" cy="216" r="4" fill="#087e82"/><text class="body" x="571" y="221">Selected records, verbatim</text>
-  <circle cx="557" cy="250" r="4" fill="#7074b8"/><text class="body" x="571" y="255">Supporting details, summarized</text>
+  <circle cx="557" cy="182" r="4" fill="#54d4c7"/><text class="body" x="571" y="187">Every user record, verbatim</text>
+  <circle cx="557" cy="216" r="4" fill="#54d4c7"/><text class="body" x="571" y="221">Selected records, verbatim</text>
+  <circle cx="557" cy="250" r="4" fill="#a89de8"/><text class="body" x="571" y="255">Supporting details, summarized</text>
   <text class="small" x="551" y="297">The next task is supplied separately.</text>
   <path class="route" d="M133 296V394H299"/>
-  <rect x="299" y="363" width="545" height="65" rx="10" fill="#e5edee"/>
+  <rect x="299" y="363" width="545" height="65" rx="10" fill="#20323f"/>
   <text class="name" x="317" y="389">Complete reviewed archive</text>
   <text class="small" x="317" y="411">All reviewed records, including those left out of the packet.</text>
   <path class="route dash" d="M792 363V324"/>
-  <path d="m787 332 5-8 5 8" fill="none" stroke="#9ab4bb" stroke-width="2"/>
+  <path d="m787 332 5-8 5 8" fill="none" stroke="#718995" stroke-width="2"/>
   <text class="small" x="779" y="346" text-anchor="end">Retrieve by ID when needed</text>
   <text class="small" x="36" y="465">Optional workflow. Default attachment reads the public conversation into your current chat.</text>
 </svg>

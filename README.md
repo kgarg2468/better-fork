@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Bring a previous T3, Claude Code, or Codex conversation into your current chat.<br>
+  Bring a previous Claude Code or Codex conversation into your current chat.<br>
   Keep your chosen model and workspace. No proxy, service, account, or API key.
 </p>
 
@@ -50,7 +50,7 @@ $fork YOUR_SESSION_ID
 
 Better Fork finds the local source conversation, reads its public user/assistant text, and recovers the task, constraints, decisions, and progress. The agent checks the relevant project files before editing and continues in your current model and workspace.
 
-T3 thread IDs, Claude Code session IDs, and Codex session IDs are accepted. The source history must be accessible locally. Tool results, attachments, hidden reasoning, and provider instructions are excluded from this attachment.
+Claude Code and Codex session IDs are accepted. The source history must be accessible locally. Tool results, attachments, hidden reasoning, and provider instructions are excluded from this attachment.
 
 ## Choose how to continue
 
@@ -82,7 +82,7 @@ Every user record stays verbatim. The helper validates the selection and stores 
 <details>
 <summary><strong>Transfer rules and implementation details</strong></summary>
 
-The read-only resolver maps T3 IDs to their actual provider-native session and returns the source cwd, model, boundary metadata, and provider-specific launch arguments. It never assumes the source provider from whichever agent happens to be running the skill.
+The read-only resolver resolves session IDs to their provider-native session and returns the source cwd, model, boundary metadata, and provider-specific launch arguments. It never assumes the source provider from whichever agent happens to be running the skill.
 
 Direct mode is admitted only when reviewed public-history coverage is complete and its entire serialized packet fits a 24,000-character transfer budget. The limit is not a model context-window claim. Partial or oversized history returns `native_required`; unsafe or invalid input fails closed. History is never silently truncated.
 
@@ -170,4 +170,4 @@ skills/fork/
     └── test_resolve_session.py
 ```
 
-The helper scripts use only the Python standard library. Better Fork does not modify T3's fork UI or replace a client's built-in `/fork` command.
+The helper scripts use only the Python standard library. Better Fork does not replace a client's built-in `/fork` command.
