@@ -28,6 +28,12 @@
 
 You already explained the project once. Better Fork gives the next chat that history so you can get back to work.
 
+## Why “Better” Fork?
+
+Built-in forks are designed to continue the same session with its native context. That is great when the next task is more of the same—but forking should not be one-size-fits-all.
+
+Better Fork lets the next task determine the context it receives: load the public conversation into your current chat, preserve a separate native fork, transfer the complete reviewed history, or let an agent build a focused context packet when the direction changes. You keep control of the model, workspace, and continuation mode.
+
 ## Install
 
 Install the `fork` skill with the open skills installer:
