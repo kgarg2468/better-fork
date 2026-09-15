@@ -33,8 +33,8 @@ The sections below apply to explicitly requested separate forks/experiments.
    python3 "$SKILL_ROOT/scripts/resolve_session.py" "$SESSION_ID" --pretty
    ```
 
-   The helper accepts T3 thread IDs and native Claude Code or Codex session
-   IDs. It reads local event/session records without changing them. Use its
+   The helper accepts native Claude Code or Codex session IDs. It reads local
+   session records without changing them. Use its
    `provider`, `native_session_id`, `cwd`, `model`, `boundary`, and
    `launch_argv`; never infer provider from the receiver/current agent. If it
    reports `session_not_found`, `ambiguous_session_id`, an unreadable record,
@@ -82,8 +82,8 @@ Locally verified Claude syntax is:
 claude --resume "$NATIVE_SESSION_ID" --fork-session "$NEXT_TASK"
 ```
 
-Confirm installed-client help and model behavior. Do not fake T3 registration
-or continue the task silently in the parent when launch/handoff is blocked.
+Confirm installed-client help and model behavior. Do not continue the task
+silently in the parent when launch/handoff is blocked.
 
 ## Fresh-context routing (experimental opt-in)
 

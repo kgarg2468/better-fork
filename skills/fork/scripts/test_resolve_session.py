@@ -13,7 +13,6 @@ class ResolveSessionTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
-        self.t3 = self.root / "t3"
         self.codex = self.root / "codex"
         self.claude = self.root / "claude"
 
@@ -24,7 +23,6 @@ class ResolveSessionTests(unittest.TestCase):
         return resolve_session.resolve_session(
             value,
             kind=kind,
-            t3_home=self.t3,
             codex_home=self.codex,
             claude_home=self.claude,
         )
@@ -103,97 +101,6 @@ class ResolveSessionTests(unittest.TestCase):
             result["launch_argv"],
             ["codex", "fork", "-C", "/repo", session_id],
         )
-        self.assertEqual(result["boundary"]["status"], "completed")
-
-    def test_resolves_t3_id_to_claude(self) -> None:
-        t3_id = "1b514968-c2bf-4eed-8050-e4b2c9b8aa81"
-        native_id = "abb98430-6ee6-4ab4-ae34-292fd9e69980"
-        self.write_jsonl(
-            self.claude / "projects" / "workspace" / f"{native_id}.jsonl",
-            [{"type": "user", "cwd": "/repo", "sessionId": native_id}],
-        )
-        event_path = (
-            self.t3
-            / "userdata"
-            / "logs"
-            / "provider"
-            / f"events.{t3_id}.log"
-        )
-        self.write_jsonl(
-            event_path,
-            [
-                {
-                    "type": "session.configured",
-                    "provider": "claudeAgent",
-                    "threadId": t3_id,
-                    "payload": {
-                        "config": {"cwd": "/repo", "model": "claude-fable-5"}
-                    },
-                },
-                {
-                    "type": "thread.started",
-                    "provider": "claudeAgent",
-                    "threadId": t3_id,
-                    "payload": {"providerThreadId": native_id},
-                },
-                {
-                    "type": "turn.completed",
-                    "provider": "claudeAgent",
-                    "threadId": t3_id,
-                    "turnId": "turn-1",
-                    "createdAt": "done",
-                },
-            ],
-        )
-        result = self.resolve(t3_id)
-        self.assertEqual(result["input_kind"], "t3")
-        self.assertEqual(result["provider"], "claude")
-        self.assertEqual(result["native_session_id"], native_id)
-        self.assertTrue(result["native_session_available"])
-        self.assertEqual(
-            result["launch_argv"],
-            ["claude", "--resume", native_id, "--fork-session"],
-        )
-
-    def test_resolves_t3_id_to_codex_from_raw_payload(self) -> None:
-        t3_id = "111cccd3-48a3-4c29-a19e-ef7876cca1c8"
-        native_id = "01a07311-ede5-7403-9724-d6572f775573"
-        self.write_jsonl(
-            self.codex
-            / "sessions"
-            / "date"
-            / f"rollout-date-{native_id}.jsonl",
-            [{"type": "session_meta", "payload": {"id": native_id, "cwd": "/repo"}}],
-        )
-        event_path = (
-            self.t3
-            / "userdata"
-            / "logs"
-            / "provider"
-            / f"events.{t3_id}.log"
-        )
-        self.write_jsonl(
-            event_path,
-            [
-                {
-                    "type": "item.completed",
-                    "provider": "codex",
-                    "threadId": t3_id,
-                    "raw": {"payload": {"threadId": native_id}},
-                },
-                {
-                    "type": "turn.completed",
-                    "provider": "codex",
-                    "threadId": t3_id,
-                    "turnId": "turn-1",
-                    "createdAt": "done",
-                    "raw": {"payload": {"threadId": native_id}},
-                },
-            ],
-        )
-        result = self.resolve(t3_id)
-        self.assertEqual(result["provider"], "codex")
-        self.assertEqual(result["native_session_id"], native_id)
         self.assertEqual(result["boundary"]["status"], "completed")
 
     def test_unknown_id_fails_closed(self) -> None:

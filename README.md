@@ -160,7 +160,6 @@ skills/fork/
 ├── SKILL.md
 ├── references/
 │   ├── direct.md
-│   ├── evaluation.md
 │   └── workflow.md
 └── scripts/
     ├── direct_context.py
