@@ -18,6 +18,7 @@
 <p align="center">
   <a href="#install">Install</a> ·
   <a href="#how-it-works">How it works</a> ·
+  <a href="#use-dynamic-mode">Dynamic mode</a> ·
   <a href="#benchmark">Benchmark</a> ·
   <a href="#honest-limits">Honest limits</a>
 </p>
@@ -78,6 +79,22 @@ Attachment loads conversation history; it does not merge backend session identit
 ## Context for the next task
 
 Changing direction? The optional selector workflow lets an agent decide which reviewed context belongs in the next thread: retain useful records, summarize supporting details, and leave the rest available for retrieval.
+
+### Use dynamic mode
+
+Start a new chat and make the mode, source session, next task, and delegation permission explicit:
+
+```text
+$fork YOUR_SESSION_ID
+
+Use dynamic mode for this fork.
+My next task is: YOUR_NEXT_TASK
+You may delegate context selection to another agent.
+```
+
+Better Fork reviews the public conversation and gives the selector your next task. The selector keeps every user message verbatim, chooses which assistant or public tool records remain verbatim, and summarizes supporting details. The complete reviewed history is archived for recovery if the new thread needs something that was not selected.
+
+Dynamic mode is experimental and never runs from `$fork ID` alone. It excludes hidden reasoning, system instructions, private provider data, attachments, and unreviewed tool output. If the host cannot create a fresh receiver, Better Fork prepares a handoff instead of claiming that a new session exists.
 
 <p align="center">
   <img src="docs/assets/context-selection.svg" alt="Experimental selector flow: reviewed public history and the next task inform an agent's selection. Every user record stays verbatim, selected assistant or public tool records stay verbatim, supporting records can be summarized, and all reviewed records remain in a recoverable archive. This is opt-in, not the default attachment behavior." width="880">
