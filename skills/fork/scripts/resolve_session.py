@@ -334,8 +334,15 @@ def resolve_session(
     t3_home = t3_home or _default_home("T3CODE_HOME", ".t3")
 
     candidates: list[dict[str, Any]] = []
+    t3_error: ResolveError | None = None
     if kind in {"auto", "t3"}:
-        t3 = _t3_resolution(identifier, t3_home)
+        try:
+            t3 = _t3_resolution(identifier, t3_home)
+        except ResolveError as exc:
+            if kind == "t3":
+                raise
+            t3_error = exc
+            t3 = None
         if t3:
             candidates.append(t3)
     if kind in {"auto", "claude"}:
@@ -348,6 +355,8 @@ def resolve_session(
             candidates.append(codex)
 
     if not candidates:
+        if t3_error is not None:
+            raise t3_error
         raise ResolveError("session_not_found")
     if len(candidates) > 1:
         raise ResolveError("ambiguous_session_id")

@@ -12,7 +12,9 @@ from resolve_session import ResolveError, _json_records, _t3_connection, resolve
 def _t3_messages(source):
     path = source.get('source_record')
     thread_id = source.get('t3_thread_id')
-    if not path or not thread_id:
+    boundary = source.get('boundary')
+    boundary_turn_id = boundary.get('turn_id') if isinstance(boundary, dict) else None
+    if not path or not thread_id or not boundary_turn_id:
         raise ValueError('t3_history_unavailable')
 
     try:
@@ -20,16 +22,37 @@ def _t3_messages(source):
     except ResolveError as exc:
         raise ValueError('t3_history_unavailable') from exc
     try:
+        boundary_record = connection.execute(
+            """
+            SELECT row_id
+            FROM projection_turns
+            WHERE thread_id = ? AND turn_id = ?
+            """,
+            (thread_id, boundary_turn_id),
+        ).fetchone()
+        if boundary_record is None:
+            raise ValueError('t3_history_unavailable')
+
         records = connection.execute(
             """
-            SELECT role, text
-            FROM projection_thread_messages
-            WHERE thread_id = ?
-                AND role IN ('user', 'assistant')
-                AND is_streaming = 0
-            ORDER BY created_at, message_id
+            SELECT messages.role, messages.text
+            FROM projection_thread_messages AS messages
+            JOIN projection_turns AS turns
+                ON turns.thread_id = messages.thread_id
+                AND (
+                    turns.turn_id = messages.turn_id
+                    OR turns.pending_message_id = messages.message_id
+                    OR turns.assistant_message_id = messages.message_id
+                )
+            WHERE messages.thread_id = ?
+                AND messages.role IN ('user', 'assistant')
+                AND messages.is_streaming = 0
+                AND turns.state = 'completed'
+                AND turns.completed_at IS NOT NULL
+                AND turns.row_id <= ?
+            ORDER BY messages.created_at, messages.message_id
             """,
-            (thread_id,),
+            (thread_id, boundary_record['row_id']),
         )
         for record in records:
             role = record['role']

@@ -27,6 +27,7 @@ class ResolveSessionTests(unittest.TestCase):
             kind=kind,
             codex_home=self.codex,
             claude_home=self.claude,
+            t3_home=self.t3,
         )
 
     def write_jsonl(self, path: Path, records: list[dict[str, object]]) -> None:
@@ -227,6 +228,31 @@ class ResolveSessionTests(unittest.TestCase):
             ["codex", "fork", "-C", "/repo", session_id],
         )
         self.assertEqual(result["boundary"]["status"], "completed")
+
+    def test_unreadable_t3_state_does_not_block_native_codex_resolution(self) -> None:
+        session_id = "01a07311-ede5-7403-9724-d6572f775573"
+        self.write_jsonl(
+            self.codex
+            / "sessions"
+            / "2026"
+            / "09"
+            / "05"
+            / f"rollout-date-{session_id}.jsonl",
+            [
+                {
+                    "type": "session_meta",
+                    "payload": {"id": session_id, "cwd": "/repo"},
+                }
+            ],
+        )
+        state_path = self.t3 / "userdata" / "state.sqlite"
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text("not a sqlite database", encoding="utf-8")
+
+        result = self.resolve(session_id)
+
+        self.assertEqual(result["input_kind"], "codex")
+        self.assertEqual(result["native_session_id"], session_id)
 
     def test_unknown_id_fails_closed(self) -> None:
         with self.assertRaisesRegex(
