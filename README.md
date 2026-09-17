@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Bring a previous Claude Code or Codex conversation into your current chat.<br>
+  Bring a previous T3, Grok, Claude Code, or Codex conversation into your current chat.<br>
   Keep your chosen model and workspace. No proxy, service, account, or API key.
 </p>
 
@@ -57,7 +57,7 @@ $fork YOUR_SESSION_ID
 
 Better Fork finds the local source conversation, reads its public user/assistant text, and recovers the task, constraints, decisions, and progress. The agent checks the relevant project files before editing and continues in your current model and workspace.
 
-Claude Code and Codex session IDs are accepted. The source history must be accessible locally. Tool results, attachments, hidden reasoning, and provider instructions are excluded from this attachment.
+T3 thread IDs—including Grok threads—and native Claude Code or Codex session IDs are accepted. The source history must be accessible locally. Tool results, attachments, hidden reasoning, streaming output, and provider instructions are excluded from this attachment.
 
 ## Choose how to continue
 
@@ -70,11 +70,11 @@ Different next steps need different context. Loading history into the current ch
 | Route | When it runs | Context behavior |
 | --- | --- | --- |
 | **Attach** | `$fork ID`; default | Loads public user/assistant history into this chat; keeps your current model and workspace |
-| **Native** | Explicit separate-session request | Uses the provider's native fork, preserving native session context |
+| **Native** | Explicit separate-session request with a native Claude Code or Codex ID | Uses the provider's native fork, preserving native session context |
 | **Direct** | Explicit fresh-context opt-in | Transfers every reviewed public record, exactly and in order; no selector call |
 | **Selector** | Explicit experimental selector opt-in | Builds a model-selected context packet with a recoverable archive of all reviewed records |
 
-Attachment loads conversation history; it does not merge backend session identities. Separate sessions require a supported host launch mechanism; otherwise the skill provides a handoff and says the session has not been created.
+Attachment loads conversation history; it does not merge backend session identities. T3 thread IDs are attachment-only. Separate sessions require a native Claude Code or Codex ID and a supported host launch mechanism; otherwise the skill provides a handoff and says the session has not been created.
 
 ## Context for the next task
 
@@ -105,7 +105,7 @@ Every user record stays verbatim. The helper validates the selection and stores 
 <details>
 <summary><strong>Transfer rules and implementation details</strong></summary>
 
-The read-only resolver resolves session IDs to their provider-native session and returns the source cwd, model, boundary metadata, and provider-specific launch arguments. It never assumes the source provider from whichever agent happens to be running the skill.
+The read-only resolver resolves T3 thread IDs or provider-native session IDs and returns the source provider, cwd, model, and boundary metadata. It returns provider-specific launch arguments only for native Claude Code and Codex sessions. It never assumes the source provider from whichever agent happens to be running the skill.
 
 Direct mode is admitted only when reviewed public-history coverage is complete and its entire serialized packet fits a 24,000-character transfer budget. The limit is not a model context-window claim. Partial or oversized history returns `native_required`; unsafe or invalid input fails closed. History is never silently truncated.
 
@@ -189,6 +189,7 @@ skills/fork/
     ├── fork_context.py
     ├── read_history.py
     ├── resolve_session.py
+    ├── test_read_history.py
     └── test_resolve_session.py
 ```
 

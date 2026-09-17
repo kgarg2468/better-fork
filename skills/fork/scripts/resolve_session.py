@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Resolve a Claude Code or Codex session identifier without mutation.
+"""Resolve a T3, Claude Code, or Codex session identifier without mutation.
 
-The resolver returns structured metadata and launch arguments. It never starts,
-resumes, forks, or modifies a session.
+The resolver returns structured metadata and native launch arguments when they
+exist. It never starts, resumes, forks, or modifies a session.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ import argparse
 import json
 import os
 import re
+import sqlite3
 import stat
 import sys
 from pathlib import Path
@@ -19,6 +20,8 @@ from typing import Any, Iterable, Sequence
 
 MAX_INPUT_BYTES = 512 * 1024 * 1024
 IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$")
+
+
 class ResolveError(Exception):
     def __init__(self, code: str) -> None:
         super().__init__(code)
@@ -36,6 +39,26 @@ def _regular_file(path: Path) -> bool:
     except OSError:
         return False
     return stat.S_ISREG(info.st_mode) and info.st_size <= MAX_INPUT_BYTES
+
+
+def _t3_connection(path: Path) -> sqlite3.Connection:
+    try:
+        info = path.stat(follow_symlinks=False)
+    except OSError as exc:
+        raise ResolveError("t3_state_unreadable") from exc
+    if not stat.S_ISREG(info.st_mode):
+        raise ResolveError("t3_state_unreadable")
+
+    connection: sqlite3.Connection | None = None
+    try:
+        connection = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True)
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA query_only=ON")
+        return connection
+    except (OSError, sqlite3.Error) as exc:
+        if connection is not None:
+            connection.close()
+        raise ResolveError("t3_state_unreadable") from exc
 
 
 def _json_records(path: Path) -> Iterable[dict[str, Any]]:
@@ -188,19 +211,140 @@ def _native_resolution(
     }
 
 
+def _normalized_provider(value: Any) -> str | None:
+    provider = _text(value)
+    if provider is None:
+        return None
+    normalized = provider.casefold()
+    if "claude" in normalized:
+        return "claude"
+    if "codex" in normalized or normalized == "openai":
+        return "codex"
+    return normalized
+
+
+def _model_selection(value: Any) -> tuple[str | None, str | None]:
+    if not isinstance(value, str):
+        return None, None
+    try:
+        selection = json.loads(value)
+    except json.JSONDecodeError:
+        return None, None
+    if not isinstance(selection, dict):
+        return None, None
+    return _text(selection.get("model")), _normalized_provider(
+        selection.get("instanceId")
+    )
+
+
+def _t3_resolution(identifier: str, root: Path) -> dict[str, Any] | None:
+    path = root / "userdata" / "state.sqlite"
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise ResolveError("t3_state_unreadable") from exc
+
+    connection = _t3_connection(path)
+    try:
+        thread = connection.execute(
+            """
+            SELECT
+                threads.thread_id,
+                COALESCE(threads.worktree_path, projects.workspace_root) AS cwd,
+                threads.latest_turn_id,
+                threads.model_selection_json,
+                sessions.provider_name,
+                sessions.provider_instance_id
+            FROM projection_threads AS threads
+            LEFT JOIN projection_projects AS projects
+                ON projects.project_id = threads.project_id
+            LEFT JOIN projection_thread_sessions AS sessions
+                ON sessions.thread_id = threads.thread_id
+            WHERE threads.thread_id = ? AND threads.deleted_at IS NULL
+            """,
+            (identifier,),
+        ).fetchone()
+        if thread is None:
+            return None
+
+        turn = connection.execute(
+            """
+            SELECT turn_id, state, completed_at
+            FROM projection_turns
+            WHERE thread_id = ?
+            ORDER BY requested_at DESC, row_id DESC
+            LIMIT 1
+            """,
+            (identifier,),
+        ).fetchone()
+    except sqlite3.Error as exc:
+        raise ResolveError("t3_state_unreadable") from exc
+    finally:
+        connection.close()
+
+    model, model_provider = _model_selection(thread["model_selection_json"])
+    provider = (
+        _normalized_provider(thread["provider_name"])
+        or _normalized_provider(thread["provider_instance_id"])
+        or model_provider
+        or "t3"
+    )
+    boundary = {
+        "status": _text(turn["state"]) if turn is not None else "unknown",
+        "turn_id": (
+            _text(turn["turn_id"])
+            if turn is not None
+            else _text(thread["latest_turn_id"])
+        ),
+        "completed_at": _text(turn["completed_at"]) if turn is not None else None,
+    }
+    return {
+        "schema_version": 1,
+        "input_id": identifier,
+        "input_kind": "t3",
+        "provider": provider,
+        "t3_thread_id": identifier,
+        "native_session_id": None,
+        "native_session_available": False,
+        "attachment_available": True,
+        "cwd": _text(thread["cwd"]),
+        "model": model,
+        "boundary": boundary,
+        "source_record": str(path.resolve()),
+        "native_record": None,
+        "launch_argv": None,
+        "mutated": False,
+    }
+
+
 def resolve_session(
     identifier: str,
     *,
     kind: str = "auto",
     codex_home: Path | None = None,
     claude_home: Path | None = None,
+    t3_home: Path | None = None,
 ) -> dict[str, Any]:
     if not IDENTIFIER_RE.fullmatch(identifier):
         raise ResolveError("invalid_session_id")
     codex_home = codex_home or _default_home("CODEX_HOME", ".codex")
     claude_home = claude_home or _default_home("CLAUDE_CONFIG_DIR", ".claude")
+    t3_home = t3_home or _default_home("T3CODE_HOME", ".t3")
 
     candidates: list[dict[str, Any]] = []
+    t3_error: ResolveError | None = None
+    if kind in {"auto", "t3"}:
+        try:
+            t3 = _t3_resolution(identifier, t3_home)
+        except ResolveError as exc:
+            if kind == "t3":
+                raise
+            t3_error = exc
+            t3 = None
+        if t3:
+            candidates.append(t3)
     if kind in {"auto", "claude"}:
         claude = _native_resolution(identifier, "claude", claude_home)
         if claude:
@@ -211,6 +355,8 @@ def resolve_session(
             candidates.append(codex)
 
     if not candidates:
+        if t3_error is not None:
+            raise t3_error
         raise ResolveError("session_not_found")
     if len(candidates) > 1:
         raise ResolveError("ambiguous_session_id")
@@ -219,14 +365,15 @@ def resolve_session(
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Resolve a Claude Code or Codex session ID without changing it."
+        description="Resolve a T3, Claude Code, or Codex ID without changing it."
     )
     parser.add_argument("session_id")
     parser.add_argument(
-        "--kind", choices=("auto", "claude", "codex"), default="auto"
+        "--kind", choices=("auto", "t3", "claude", "codex"), default="auto"
     )
     parser.add_argument("--codex-home", type=Path)
     parser.add_argument("--claude-home", type=Path)
+    parser.add_argument("--t3-home", type=Path)
     parser.add_argument("--pretty", action="store_true")
     return parser
 
@@ -239,6 +386,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             kind=args.kind,
             codex_home=args.codex_home,
             claude_home=args.claude_home,
+            t3_home=args.t3_home,
         )
     except ResolveError as exc:
         print(
