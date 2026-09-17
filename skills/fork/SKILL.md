@@ -1,11 +1,11 @@
 ---
 name: fork
-description: Attach a previous Claude Code or Codex conversation to the current chat and continue its work; create a separate native fork only when requested.
+description: Attach a previous T3, Grok, Claude Code, or Codex conversation to the current chat and continue its work; create a separate native fork only when requested.
 ---
 
 # Fork
 
-Create a real continuation from a known completed boundary. Accept a native Claude Code or Codex session ID. Preserve the parent session, repository state, user authority, and requested model.
+Create a real continuation from a known boundary. Accept a T3 thread ID or a native Claude Code or Codex session ID. Preserve the parent session, repository state, user authority, and requested model.
 
 This skill is normally discoverable automatically. In Codex, find skills with `/skills` and invoke this one as `$fork`; do not promise that `/fork` intercepts a client built-in. In Claude environments that discover skills, `/fork` may invoke it, but never override a native command of that name.
 
@@ -25,11 +25,12 @@ For every supplied ID, run the bundled read-only resolver before choosing a prov
 python3 "$SKILL_ROOT/scripts/resolve_session.py" "$SESSION_ID" --pretty
 ```
 
-`SKILL_ROOT` is the resolved directory containing this `SKILL.md`. The resolver accepts Claude Code and Codex IDs, returns the provider plus cwd, model, boundary, and launch arguments, and never mutates or launches anything. Treat `provider`, `native_session_id`, and `boundary` from its JSON as authoritative. Never infer the source provider from the current agent. If resolution fails, stop with its error; do not try another provider blindly.
+`SKILL_ROOT` is the resolved directory containing this `SKILL.md`. The resolver accepts T3 thread IDs and native Claude Code or Codex IDs, returns the provider plus cwd, model, and boundary, and never mutates or launches anything. Native IDs also return launch arguments. Treat `input_kind`, `provider`, `native_session_available`, and `boundary` from its JSON as authoritative. A T3 result, including a Grok thread, is attachment-only and does not claim a native provider session. Never infer the source provider from the current agent. If resolution fails, stop with its error; do not try another provider blindly.
 
 ## Invariants
 
 - For current-chat attachment, read history and continue here. Do not stop with “fork not created” or give CLI commands merely because a native fork API is absent.
+- T3 thread IDs are attachment sources. A separate native fork requires a resolvable native Claude Code or Codex session ID.
 - Never claim a child exists without an actual child/session ID. Without a callable API, give an exact local CLI command or a handoff marked `not created`.
 - A shared-workspace subagent is not necessarily a persistent, user-addressable interactive fork. Do not equate them.
 - Do not write app databases, make UI changes, or silently continue the task in the parent.

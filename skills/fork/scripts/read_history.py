@@ -2,13 +2,53 @@
 """Read a page of public conversation text for attachment to the current chat."""
 import argparse
 import json
+import sqlite3
 from pathlib import Path
 
 from fork_context import _reject_secrets
-from resolve_session import _json_records, resolve_session
+from resolve_session import ResolveError, _json_records, _t3_connection, resolve_session
+
+
+def _t3_messages(source):
+    path = source.get('source_record')
+    thread_id = source.get('t3_thread_id')
+    if not path or not thread_id:
+        raise ValueError('t3_history_unavailable')
+
+    try:
+        connection = _t3_connection(Path(path))
+    except ResolveError as exc:
+        raise ValueError('t3_history_unavailable') from exc
+    try:
+        records = connection.execute(
+            """
+            SELECT role, text
+            FROM projection_thread_messages
+            WHERE thread_id = ?
+                AND role IN ('user', 'assistant')
+                AND is_streaming = 0
+            ORDER BY created_at, message_id
+            """,
+            (thread_id,),
+        )
+        for record in records:
+            role = record['role']
+            text = record['text']
+            if role not in ('user', 'assistant') or not isinstance(text, str) or not text:
+                continue
+            _reject_secrets(text)
+            yield {'role': role, 'text': text}
+    except sqlite3.Error as exc:
+        raise ValueError('t3_history_unavailable') from exc
+    finally:
+        connection.close()
 
 
 def messages(source):
+    if source.get('input_kind') == 't3':
+        yield from _t3_messages(source)
+        return
+
     path = source.get('native_record')
     if not path:
         raise ValueError('native_history_unavailable')
