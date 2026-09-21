@@ -122,6 +122,7 @@ class ResolveSessionTests(unittest.TestCase):
         self.assertEqual(
             result["boundary"],
             {
+                "row_id": 1,
                 "status": "completed",
                 "turn_id": "turn-1",
                 "completed_at": "2026-09-17T01:01:00Z",

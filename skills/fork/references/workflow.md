@@ -3,8 +3,14 @@
 ## Current-chat attachment (default)
 
 When the user provides an ID in a new chat, that chat is already the receiver.
+Requests to continue here independently also use this route. The source chat
+is untouched; shared workspace files are not automatically isolated. For a
+pending or running source head, attach through the reader's returned
+`attachment_boundary` and disclose its `attachment_note`.
 Resolve the ID, then run `python3 "$SKILL_ROOT/scripts/read_history.py" "$SESSION_ID"`.
-Read each page using `--offset` with the returned `next_offset` until null.
+Run the returned `next_argv` for each page until null. For T3 Code it includes
+`--through-turn`, pinning all pages to the same completed turn while the source
+continues running. Do not drop that argument or reselect the boundary per page.
 The helper accepts T3 thread IDs, including Grok threads, plus native Claude
 Code and Codex session IDs. It extracts finalized user/assistant public text
 only, excluding reasoning, provider instructions, streaming output, and tool
@@ -66,8 +72,8 @@ the native session ID and next task and retain its returned child ID. A generic
 shared-workspace subagent is not a persistent interactive fork unless it returns
 a user-addressable child session.
 
-This route requires `native_session_available: true`. T3 thread IDs—including
-Grok threads—are attachment-only unless the user separately provides a native
+This route requires `native_session_available: true`. T3 thread IDs, including
+Grok threads, are attachment-only unless the user separately provides a native
 Claude Code or Codex session ID.
 
 Without a callable API, provide an actionable handoff marked `not created`.

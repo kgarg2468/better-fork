@@ -2,10 +2,14 @@
 from __future__ import annotations
 
 import json
+import contextlib
+import io
 import sqlite3
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import read_history
 
@@ -111,6 +115,72 @@ class ReadHistoryTests(unittest.TestCase):
                 {"role": "assistant", "text": "second"},
             ],
         )
+
+        # A running head still permits the preceding completed conversation.
+        source['boundary'] = {'status': 'running', 'turn_id': 'turn-active'}
+        self.assertEqual(list(read_history.messages(source)), [
+            {'role': 'user', 'text': 'first'},
+            {'role': 'assistant', 'text': 'second'},
+        ])
+        self.assertEqual(source['attachment_boundary']['turn_id'], 'turn-completed')
+
+        # Reproduce a queued head without a provider turn ID.
+        with sqlite3.connect(path) as connection:
+            connection.execute(
+                'INSERT INTO projection_turns VALUES (?, ?, ?, ?, ?, ?, ?)',
+                (4, thread_id, None, 'queued', None, 'pending', None),
+            )
+        source['boundary'] = {'status': 'pending', 'turn_id': None}
+        recovered = list(read_history.messages(source))
+        self.assertEqual([r['text'] for r in recovered],
+                         ['first', 'second', 'later prompt', 'later answer'])
+        self.assertEqual(source['attachment_boundary']['turn_id'], 'turn-after-boundary')
+
+        # The CLI supplies a replayable, pinned command for subsequent pages.
+        stdout = io.StringIO()
+        with patch.object(read_history, 'resolve_session', return_value=source), \
+             patch.object(sys, 'argv', ['read_history.py', thread_id, '--limit', '1']), \
+             contextlib.redirect_stdout(stdout):
+            self.assertIsNone(read_history.main())
+        first = json.loads(stdout.getvalue())
+        self.assertEqual(first['next_argv'][-2:], ['--through-turn', 'turn-after-boundary'])
+        stdout = io.StringIO()
+        with patch.object(read_history, 'resolve_session', return_value=source), \
+             patch.object(sys, 'argv', first['next_argv'][1:]), \
+             contextlib.redirect_stdout(stdout):
+            read_history.main()
+        self.assertEqual(json.loads(stdout.getvalue())['records'],
+                         [{'role': 'assistant', 'text': 'second'}])
+        stderr = io.StringIO()
+        with patch.object(read_history, 'resolve_session', return_value=source), \
+             patch.object(sys, 'argv', ['read_history.py', thread_id, '--offset', '1']), \
+             contextlib.redirect_stderr(stderr):
+            self.assertEqual(read_history.main(), 2)
+        self.assertEqual(json.loads(stderr.getvalue())['error'],
+                         't3_pagination_requires_through_turn')
+
+        # Pages explicitly pinned to the first completed turn ignore later work.
+        self.assertEqual(list(read_history.messages(source, 'turn-completed')), [
+            {'role': 'user', 'text': 'first'},
+            {'role': 'assistant', 'text': 'second'},
+        ])
+        with self.assertRaisesRegex(ValueError, 't3_attachment_boundary_unavailable'):
+            list(read_history.messages(source, 'turn-active'))
+
+        # A resolver-captured queued row cannot include subsequently appended turns.
+        source['boundary'] = {'status': 'pending', 'turn_id': None, 'row_id': 2}
+        self.assertEqual([r['text'] for r in read_history.messages(source)], ['first', 'second'])
+
+        # Do not substitute another boundary when an explicit ID is missing.
+        source['boundary'] = {'status': 'completed', 'turn_id': 'missing'}
+        with self.assertRaisesRegex(ValueError, 't3_history_unavailable'):
+            list(read_history.messages(source))
+
+        with sqlite3.connect(path) as connection:
+            connection.execute("DELETE FROM projection_turns WHERE state = 'completed'")
+        source['boundary'] = {'status': 'pending', 'turn_id': None}
+        with self.assertRaisesRegex(ValueError, 't3_no_completed_history'):
+            list(read_history.messages(source))
 
     def test_native_codex_history_remains_supported(self) -> None:
         path = self.root / "codex.jsonl"

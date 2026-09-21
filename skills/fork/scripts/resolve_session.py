@@ -35,7 +35,7 @@ def _default_home(env_name: str, suffix: str) -> Path:
 
 def _regular_file(path: Path) -> bool:
     try:
-        info = path.stat(follow_symlinks=False)
+        info = path.lstat()
     except OSError:
         return False
     return stat.S_ISREG(info.st_mode) and info.st_size <= MAX_INPUT_BYTES
@@ -43,7 +43,7 @@ def _regular_file(path: Path) -> bool:
 
 def _t3_connection(path: Path) -> sqlite3.Connection:
     try:
-        info = path.stat(follow_symlinks=False)
+        info = path.lstat()
     except OSError as exc:
         raise ResolveError("t3_state_unreadable") from exc
     if not stat.S_ISREG(info.st_mode):
@@ -271,7 +271,7 @@ def _t3_resolution(identifier: str, root: Path) -> dict[str, Any] | None:
 
         turn = connection.execute(
             """
-            SELECT turn_id, state, completed_at
+            SELECT row_id, turn_id, state, completed_at
             FROM projection_turns
             WHERE thread_id = ?
             ORDER BY requested_at DESC, row_id DESC
@@ -292,6 +292,7 @@ def _t3_resolution(identifier: str, root: Path) -> dict[str, Any] | None:
         or "t3"
     )
     boundary = {
+        "row_id": turn["row_id"] if turn is not None else None,
         "status": _text(turn["state"]) if turn is not None else "unknown",
         "turn_id": (
             _text(turn["turn_id"])
