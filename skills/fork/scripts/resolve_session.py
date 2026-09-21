@@ -271,7 +271,7 @@ def _t3_resolution(identifier: str, root: Path) -> dict[str, Any] | None:
 
         turn = connection.execute(
             """
-            SELECT turn_id, state, completed_at
+            SELECT row_id, turn_id, state, completed_at
             FROM projection_turns
             WHERE thread_id = ?
             ORDER BY requested_at DESC, row_id DESC
@@ -292,6 +292,7 @@ def _t3_resolution(identifier: str, root: Path) -> dict[str, Any] | None:
         or "t3"
     )
     boundary = {
+        "row_id": turn["row_id"] if turn is not None else None,
         "status": _text(turn["state"]) if turn is not None else "unknown",
         "turn_id": (
             _text(turn["turn_id"])

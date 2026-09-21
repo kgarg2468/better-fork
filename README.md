@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Bring a previous T3, Grok, Claude Code, or Codex conversation into your current chat.<br>
+  Bring a previous T3 Code, Claude Code, or Codex conversation into your current chat.<br>
   Keep your chosen model and workspace. No proxy, service, account, or API key.
 </p>
 
@@ -57,7 +57,20 @@ $fork YOUR_SESSION_ID
 
 Better Fork finds the local source conversation, reads its public user/assistant text, and recovers the task, constraints, decisions, and progress. The agent checks the relevant project files before editing and continues in your current model and workspace.
 
-T3 thread IDs—including Grok threads—and native Claude Code or Codex session IDs are accepted. The source history must be accessible locally. Tool results, attachments, hidden reasoning, streaming output, and provider instructions are excluded from this attachment.
+T3 Code thread IDs (including Grok threads) and native Claude Code or Codex session IDs are accepted. The source history must be accessible locally. Tool results, attachments, hidden reasoning, streaming output, and provider instructions are excluded from this attachment.
+
+### Using a T3 Code thread ID
+
+The thread ID shown by T3 Code identifies the conversation in T3 Code. It is distinct from the underlying Claude Code or Codex session ID. You can paste that T3 Code ID directly:
+
+```text
+$fork YOUR_T3_CODE_THREAD_ID
+Continue this conversation here independently and leave the original chat untouched.
+```
+
+Your receiving chat is already a separate conversation. Better Fork reads the source history into it without changing the original thread or opening another app. If the source has a queued, running, or interrupted turn, it attaches through the last completed turn and tells you which unfinished content was excluded. All pages use that same completed boundary. A thread with no completed history reports that limitation.
+
+Conversation separation does not isolate project files: two chats using the same workspace can still edit the same files. On multiple computers, run the skill where the source history is stored. Installing it on another node does not copy or synchronize your conversations.
 
 ## Choose how to continue
 
@@ -74,7 +87,7 @@ Different next steps need different context. Loading history into the current ch
 | **Direct** | Explicit fresh-context opt-in | Transfers every reviewed public record, exactly and in order; no selector call |
 | **Selector** | Explicit experimental selector opt-in | Builds a model-selected context packet with a recoverable archive of all reviewed records |
 
-Attachment loads conversation history; it does not merge backend session identities. T3 thread IDs are attachment-only. Separate sessions require a native Claude Code or Codex ID and a supported host launch mechanism; otherwise the skill provides a handoff and says the session has not been created.
+Attachment loads conversation history; it does not merge backend session identities. T3 Code thread IDs support attachment into your current chat. Creating an additional native session requires a native Claude Code or Codex ID and a supported host launch mechanism; otherwise the skill provides a handoff and says the session has not been created.
 
 ## Context for the next task
 

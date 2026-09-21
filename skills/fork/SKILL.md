@@ -11,6 +11,20 @@ This skill is normally discoverable automatically. In Codex, find skills with `/
 
 ## Choose the mode
 
+“Fork this thread so I can continue here independently while the original stays
+untouched” means current-chat attachment. This chat is already the separate
+conversation. Run the history reader and continue here; do not launch another
+session, browse for a fork button, or navigate to t3.chat (a different product
+from T3 Code). Attachment preserves the source conversation but does not isolate
+shared project files.
+
+For attachment, a pending/running/interrupted source head is not a blocker.
+The reader selects the last completed turn and returns `attachment_boundary`
+and `attachment_note`. Follow `next_argv` until null to read all pages with the
+same boundary. Disclose excluded unfinished turns. If reading fails,
+report the concrete error without inventing a UI action or requiring a native
+fork API.
+
 - For `$fork ID`, “attach this session”, or ordinary continuation in a new chat, load the source conversation into the CURRENT chat. Keep the current model. Read the current-chat attachment section of the workflow and perform it; a native fork API is not required.
 - Create a separate native session only when the user explicitly requests another session or a native fork.
 - Use fresh context only when explicitly requested, or when the user clearly changes direction and opts into the experiment. It is not a native fork.
