@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="880" height="460" viewBox="0 0 880 460" role="img" aria-labelledby="title desc">
   <title id="title">One history, four ways forward</title>
-  <desc id="desc">A route map. Attach loads public history into the current chat by default. Request native for a separate provider fork. Opt into direct to transfer every reviewed record within the budget, or selector to shape fresh context around the next task.</desc>
+  <desc id="desc">A route map. Attach loads public history into the current chat by default. Request native for a separate provider fork. Opt into direct to transfer every reviewed record within the budget, or dynamic mode to shape fresh context around the next task.</desc>
   <style>
     text{font-family:Arial,Helvetica,sans-serif;fill:#e6edf3}.title{font-size:28px;font-weight:700}.name{font-size:18px;font-weight:700}.body{font-size:14px;fill:#a2b5bf}.tag{font-size:11px;letter-spacing:1px}.line{fill:none;stroke-width:3;stroke-linecap:round}
   </style>
@@ -16,12 +16,12 @@
   <rect x="285" y="112" width="559" height="68" rx="12" fill="#173e42"/>
   <g stroke-width="3" fill="#101b24"><circle cx="298" cy="144" r="7" stroke="#54d4c7"/><circle cx="298" cy="233" r="7" stroke="#8aa4b2"/><circle cx="298" cy="322" r="7" stroke="#a89de8"/><circle cx="298" cy="411" r="7" stroke="#a89de8"/></g>
   <text class="name" x="322" y="140">Attach</text><text class="tag" x="818" y="137" text-anchor="end">DEFAULT</text>
-  <text class="body" x="322" y="164">Load public history into the chat you are already in.</text>
+  <text class="body" x="322" y="164">Load a fixed snapshot and tool evidence into this chat.</text>
   <text class="name" x="322" y="229">Native fork</text><text class="tag" x="818" y="226" text-anchor="end">ON REQUEST</text>
-  <text class="body" x="322" y="253">Continue in a separate session using the provider's fork.</text>
+  <text class="body" x="322" y="253">Create a real provider child. Return its ID. No model call.</text>
   <path d="M322 279H818M322 368H818" stroke="#304653"/>
   <text class="name" x="322" y="318">Direct context</text><text class="tag" x="818" y="315" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
   <text class="body" x="322" y="342">Transfer every reviewed record. Complete history must fit.</text>
-  <text class="name" x="322" y="407">Selector</text><text class="tag" x="818" y="404" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
+  <text class="name" x="322" y="407">Dynamic</text><text class="tag" x="818" y="404" text-anchor="end">EXPERIMENTAL · OPT-IN</text>
   <text class="body" x="322" y="431">Let an agent shape fresh context around your next task.</text>
 </svg>
