@@ -47,7 +47,7 @@ In Codex, invoke it as `$fork`; `/fork` may be intercepted by the native client 
 
 You can also clone the repository and copy `skills/fork` into your agent's skills directory.
 
-Attachment needs Python 3.9+ only. Native Codex forks also need the Codex CLI. Native Claude forks use Node 18+ and the optional official SDK; in your installed skill directory, run `npm install --ignore-scripts --no-audit --no-fund`. Neither native fork adapter makes a model call to create the child.
+Attachment needs Python 3.9+ only. Native Codex forks also need the Codex CLI. Native Claude forks use Node 20+ and the optional official SDK; in your installed skill directory, run `npm install --ignore-scripts --no-audit --no-fund`. Neither native fork adapter makes a model call to create the child.
 
 ## How it works
 

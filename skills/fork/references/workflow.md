@@ -4,7 +4,7 @@
 
 `scripts/better_fork.py` is the entry point. Python 3.9+ is sufficient for
 attachment and dynamic packaging. Codex native creation also needs the Codex
-CLI. Claude native creation needs Node 18+ and the optional Claude Agent SDK
+CLI. Claude native creation needs Node 20+ and the optional Claude Agent SDK
 specified in this skill's `package.json`. T3 is never a dependency.
 
 `resolve_session.py` remains a read-only diagnostic. `--kind codex|claude|t3`
