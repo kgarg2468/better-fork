@@ -18,3 +18,20 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: python -m unittest discover -s skills/fork/scripts -p 'test_*.py' -v
+  claude-sdk-smoke:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '20'
+      - run: npm ci --prefix skills/fork --ignore-scripts --no-audit --no-fund
+        env:
+          npm_config_engine_strict: 'true'
+      - run: python3 -m unittest test_native_integration.NativeIntegrationTests.test_real_claude_sdk_completed_boundary_fork -v
+        working-directory: skills/fork/scripts
+        env:
+          BETTER_FORK_RUN_NATIVE_SMOKE: '1'

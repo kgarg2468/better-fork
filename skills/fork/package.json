@@ -1,0 +1,11 @@
+{
+  "name": "better-fork-native-adapters",
+  "private": true,
+  "description": "Optional SDK for model-free native Claude Code forks. Python attachment and Codex do not need npm dependencies.",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.281"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

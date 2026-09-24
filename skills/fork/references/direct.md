@@ -2,7 +2,7 @@
 
 Use this experimental method only after explicit fresh-context opt-in. It sends
 all reviewed public records without selection, summaries, record dropping, or a
-preparation model call. Native continuation remains the ordinary default.
+preparation model call. Current-chat attachment remains the ordinary default.
 
 ## Prepare and verify
 
