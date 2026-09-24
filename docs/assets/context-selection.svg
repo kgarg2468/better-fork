@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="880" height="490" viewBox="0 0 880 490" role="img" aria-labelledby="title desc">
   <title id="title">Pack for the next task</title>
-  <desc id="desc">The optional experimental selector uses reviewed history and the next task to choose context. Every user record and selected supporting records stay verbatim; other supporting details may be summarized. All reviewed records remain in an archive for later retrieval. The helper validates the selection.</desc>
+  <desc id="desc">Experimental dynamic mode uses reviewed history and the next task to choose context. Every user record and selected supporting records stay verbatim; other supporting details may be summarized. All reviewed records remain in an archive for later retrieval. The helper validates the selection.</desc>
   <style>
     text{font-family:Arial,Helvetica,sans-serif;fill:#e6edf3}.title{font-size:28px;font-weight:700}.name{font-size:17px;font-weight:700}.body{font-size:14px}.small{font-size:12px;fill:#a2b5bf}.tag{font-size:11px;letter-spacing:1px;fill:#b3aaf2}.route{fill:none;stroke:#718995;stroke-width:2}.dash{stroke-dasharray:5 5}
   </style>
@@ -18,7 +18,7 @@
   <path class="route" d="M224 211H304M466 211H529"/>
   <path d="m521 205 8 6-8 6" fill="none" stroke="#718995" stroke-width="2"/>
   <rect x="299" y="119" width="174" height="37" rx="18" fill="#34304f"/>
-  <text class="body" x="386" y="143" text-anchor="middle">Your next task</text>
+  <text class="body" x="386" y="143" text-anchor="middle">Next task + project</text>
   <path class="route" d="M386 156V176"/>
   <path d="M306 178H465V247H306Z" fill="#304d5e"/>
   <text x="386" y="205" text-anchor="middle" style="font-size:17px;font-weight:700;fill:#e6edf3">Agent selects</text>

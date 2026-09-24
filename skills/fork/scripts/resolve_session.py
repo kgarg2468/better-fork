@@ -207,6 +207,7 @@ def _native_resolution(
         "source_record": str(path.resolve()),
         "native_record": str(path.resolve()),
         "launch_argv": _launch_argv(provider, identifier, cwd),
+        "launch_argv_note": "Legacy unpinned interactive command; use better_fork.py native for a verified boundary.",
         "mutated": False,
     }
 
@@ -248,15 +249,21 @@ def _t3_resolution(identifier: str, root: Path) -> dict[str, Any] | None:
 
     connection = _t3_connection(path)
     try:
+        session_columns = {row['name'] for row in connection.execute('PRAGMA table_info(projection_thread_sessions)')}
+        native_columns = ', '.join(
+            f'sessions.{name} AS {name}' if name in session_columns else f'NULL AS {name}'
+            for name in ('provider_session_id', 'provider_thread_id')
+        )
         thread = connection.execute(
-            """
+            f"""
             SELECT
                 threads.thread_id,
                 COALESCE(threads.worktree_path, projects.workspace_root) AS cwd,
                 threads.latest_turn_id,
                 threads.model_selection_json,
                 sessions.provider_name,
-                sessions.provider_instance_id
+                sessions.provider_instance_id,
+                {native_columns}
             FROM projection_threads AS threads
             LEFT JOIN projection_projects AS projects
                 ON projects.project_id = threads.project_id
@@ -309,6 +316,10 @@ def _t3_resolution(identifier: str, root: Path) -> dict[str, Any] | None:
         "t3_thread_id": identifier,
         "native_session_id": None,
         "native_session_available": False,
+        "native_id_candidates": list(dict.fromkeys(
+            value for value in (thread['provider_thread_id'], thread['provider_session_id'])
+            if isinstance(value, str) and IDENTIFIER_RE.fullmatch(value)
+        )),
         "attachment_available": True,
         "cwd": _text(thread["cwd"]),
         "model": model,
@@ -345,6 +356,30 @@ def resolve_session(
             t3_error = exc
             t3 = None
         if t3:
+            provider = t3['provider']
+            if provider in {'codex', 'claude'}:
+                root = codex_home if provider == 'codex' else claude_home
+                mapped = []
+                mapping_errors = []
+                for value in t3.pop('native_id_candidates', []):
+                    try:
+                        candidate = _native_resolution(value, provider, root)
+                    except ResolveError as exc:
+                        mapping_errors.append(exc.code)
+                        continue
+                    if candidate:
+                        mapped.append(candidate)
+                if mapping_errors:
+                    t3['native_mapping_note'] = ','.join(sorted(set(mapping_errors)))
+                elif len(mapped) == 1:
+                    t3['native_source'] = mapped[0]
+                    t3['native_session_available'] = True
+                    t3['native_session_id'] = mapped[0]['native_session_id']
+                    t3['native_mapping_note'] = 'mapped_by_stored_provider_id; native history may cover only the latest provider session'
+                elif len(mapped) > 1:
+                    t3['native_mapping_note'] = 'ambiguous_native_mapping'
+            else:
+                t3.pop('native_id_candidates', None)
             candidates.append(t3)
     if kind in {"auto", "claude"}:
         claude = _native_resolution(identifier, "claude", claude_home)

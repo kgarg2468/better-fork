@@ -13,12 +13,12 @@
   <path d="m802 278 10 8-10 8" fill="none" stroke="#54d4c7" stroke-width="3"/>
   <g fill="#101b24" stroke="#8aa4b2" stroke-width="3"><circle cx="68" cy="185" r="8"/><circle cx="223" cy="185" r="8"/><circle cx="378" cy="185" r="8"/></g>
   <text class="body" x="50" y="157">Task</text><text class="body" x="181" y="157">Constraints</text><text class="body" x="346" y="157">Progress</text>
-  <text class="small" x="36" y="222">Claude Code · Codex</text>
+  <text class="small" x="36" y="222">Codex · Claude Code · optional T3 Code</text>
   <text class="small" x="604" y="173">Source stays intact</text>
   <rect x="516" y="221" width="306" height="45" rx="22" fill="#173e42"/>
   <text class="mono" x="669" y="249" text-anchor="middle">$fork YOUR_SESSION_ID</text>
   <circle cx="554" cy="286" r="9" fill="#54d4c7" stroke="#101b24" stroke-width="3"/>
   <text class="body teal" x="533" y="321">Your current chat, ready to continue</text>
   <text class="small" x="533" y="346">Same selected model. Same workspace.</text>
-  <text class="small" x="36" y="346">Public conversation text only.</text>
+  <text class="small" x="36" y="346">Public history + available tool evidence.</text>
 </svg>

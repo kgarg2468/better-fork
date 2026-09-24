@@ -10,7 +10,23 @@ from fork_context import ForkContextError, _reject_secrets
 from resolve_session import ResolveError, _json_records, _t3_connection, resolve_session
 
 
-def _t3_messages(source, through_turn=None):
+def snapshot(source, through_turn=None):
+    """Build one rich public projection for the portable controller."""
+    from history_adapters import native_snapshot, Projection, make_snapshot
+
+    if source.get('input_kind') != 't3':
+        return native_snapshot(source, through_turn)
+    # Activity summaries are public evidence, not raw tool payloads.
+    projection = Projection('t3')
+    records = list(_t3_messages(source, through_turn, rich=True))
+    for record in sorted(records, key=lambda r: (r['created_at'], r['id'])):
+        projection.add(record['id'], record['role'], record['text'])
+    projection.omissions.update({'tool_results_unavailable_in_t3_projection', 'attachment_bytes'})
+    return make_snapshot(source, source['attachment_boundary']['turn_id'], projection,
+                         excluded_later=source.get('boundary', {}).get('turn_id') != source['attachment_boundary']['turn_id'])
+
+
+def _t3_messages(source, through_turn=None, rich=False):
     path = source.get('source_record')
     thread_id = source.get('t3_thread_id')
     boundary = source.get('boundary')
@@ -62,9 +78,12 @@ def _t3_messages(source, through_turn=None):
             'Attached through the requested completed turn.'
         )
 
+        columns = {row['name'] for row in connection.execute('PRAGMA table_info(projection_thread_messages)')}
+        attachments = 'messages.attachments_json' if 'attachments_json' in columns else 'NULL'
         records = connection.execute(
-            """
-            SELECT messages.role, messages.text
+            f"""
+            SELECT messages.message_id, messages.role, messages.text, messages.created_at,
+                {attachments} AS attachments_json
             FROM projection_thread_messages AS messages
             JOIN projection_turns AS turns
                 ON turns.thread_id = messages.thread_id
@@ -86,10 +105,45 @@ def _t3_messages(source, through_turn=None):
         for record in records:
             role = record['role']
             text = record['text']
-            if role not in ('user', 'assistant') or not isinstance(text, str) or not text:
+            if role not in ('user', 'assistant') or not isinstance(text, str):
                 continue
             _reject_secrets(text)
-            yield {'role': role, 'text': text}
+            if text:
+                value = {'role': role, 'text': text}
+                if rich:
+                    value.update(id=record['message_id'], created_at=record['created_at'])
+                yield value
+            if rich and record['attachments_json']:
+                try:
+                    references = json.loads(record['attachments_json'])
+                except (TypeError, ValueError):
+                    references = []
+                if isinstance(references, list):
+                    for index, item in enumerate(references):
+                        if not isinstance(item, dict):
+                            continue
+                        ref = {key: item[key] for key in ('name', 'mimeType', 'sizeBytes') if isinstance(item.get(key), (str, int))}
+                        ref.update(kind='attachment_reference', available=False)
+                        text = json.dumps(ref, ensure_ascii=False)
+                        _reject_secrets(text)
+                        yield {'id': f"{record['message_id']}:attachment:{index}", 'role': role,
+                               'text': text, 'created_at': record['created_at']}
+        if rich and connection.execute("SELECT 1 FROM sqlite_master WHERE name = 'projection_thread_activities'").fetchone():
+            activities = connection.execute('''
+                SELECT activities.activity_id, activities.summary, activities.kind, activities.created_at
+                FROM projection_thread_activities AS activities
+                JOIN projection_turns AS turns ON turns.thread_id = activities.thread_id
+                    AND turns.turn_id = activities.turn_id
+                WHERE activities.thread_id = ? AND turns.state = 'completed'
+                    AND turns.completed_at IS NOT NULL AND turns.row_id <= ?
+                    AND activities.kind IN ('tool.started', 'tool.updated', 'tool.completed')
+                ORDER BY activities.created_at, activities.activity_id
+            ''', (thread_id, boundary_record['row_id']))
+            for item in activities:
+                text = json.dumps({'kind': 'tool_activity_summary', 'event': item['kind'],
+                                   'summary': item['summary'], 'raw_payload_included': False}, ensure_ascii=False)
+                yield {'id': 'activity:' + item['activity_id'], 'role': 'tool', 'text': text,
+                       'created_at': item['created_at']}
     except sqlite3.Error as exc:
         raise ValueError('t3_history_unavailable') from exc
     finally:
